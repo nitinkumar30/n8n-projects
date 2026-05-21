@@ -1,0 +1,236 @@
+{
+  "name": "QR Code Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://api.qrserver.com/v1/create-qr-code/?data={{ $('Telegram Trigger').item.json.message.text }}&size=350x350&ecc=M&color=1a73e8&bgcolor=ffffff&qzone=4&margin=10&format=png",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        672,
+        224
+      ],
+      "id": "8f46921c-2115-413d-91d7-f6cea6dd6818",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{$node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"]}}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "=Dear {{ $('Telegram Trigger').item.json.message.from.username }}, here is your QR Code ✅ ",
+          "reply_to_message_id": "={{ $('Telegram Trigger').item.json.message.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        224
+      ],
+      "id": "00c3f1c8-39be-419d-b9fd-5febb2939729",
+      "name": "Send a photo message",
+      "webhookId": "6ee4096e-c3e5-4f53-970d-69f704cbd19a",
+      "credentials": {
+        "telegramApi": {
+          "id": "5lMq7wcQxwJKp8CA",
+          "name": "QR code generator"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        320
+      ],
+      "id": "d8187bee-f2cd-4e8d-a13c-f675dcc83e67",
+      "name": "Telegram Trigger",
+      "webhookId": "d68b0aab-c59c-4a07-8896-8af42240d2e9",
+      "retryOnFail": false,
+      "maxTries": 5,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "telegramApi": {
+          "id": "5lMq7wcQxwJKp8CA",
+          "name": "QR code generator"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=Dear {{ $json.message.from.username }},\n\nYour provided text isn't a valid URL. \nText sent - {{ $json.message.text }}",
+        "additionalFields": {
+          "reply_to_message_id": "={{ $json.message.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        416
+      ],
+      "id": "164fb042-62f2-4d2c-b13f-39cb30dd8178",
+      "name": "Send error message",
+      "webhookId": "b3d4fbc8-27be-4670-ba52-e64e87cd0722",
+      "credentials": {
+        "telegramApi": {
+          "id": "5lMq7wcQxwJKp8CA",
+          "name": "QR code generator"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "49678baa-91bf-42c3-9cf2-a8518467c422",
+              "name": "url",
+              "value": "={{ $('Telegram Trigger').item.json.message.link_preview_options.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        224
+      ],
+      "id": "9f7405b2-54ff-4507-a4b2-c3a3bc499770",
+      "name": "Use URL to generate QR code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "377ea5c8-1ceb-4811-af44-9da3ead02ff3",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "http",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            },
+            {
+              "id": "41a76ef8-cfb6-4fa8-9f8e-4c9f48d2fc0e",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "https",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        320
+      ],
+      "id": "0cbe2b78-702e-4434-8b03-2e2e40155941",
+      "name": "Valid URL or not"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Valid URL or not",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use URL to generate QR code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid URL or not": {
+      "main": [
+        [
+          {
+            "node": "Use URL to generate QR code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send error message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "aa95914e-0966-45e7-83bf-8a5582fc08c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7f8bacde112c47fc748772d11341a088e5a9305096bfe1e55b37f2f4b841d2ee"
+  },
+  "id": "gwS3W2CELKHpBFPd",
+  "tags": []
+}
