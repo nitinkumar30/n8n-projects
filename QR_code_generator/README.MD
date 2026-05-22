@@ -1,6 +1,7 @@
 # 🫡✨ QR Code Generator Bot (n8n + Telegram) — now with Cloudflare Tunnel
 
-You made a small project that behaves like a serious deployment. Respect. 😌
+
+![Gemini_Generated_Image_ev6otpev6otpev6o](./images/Gemini_Generated_Image_ev6otpev6otpev6o.png)
 
 This folder contains a Telegram bot workflow built in **n8n** that:
 
@@ -16,9 +17,16 @@ And—most importantly—your webhook runs over **FREE HTTPS using Cloudflare Tu
 
 ## 📌 What’s new in this implementation (vs the older ngrok-based approach)
 
+![Gemini_Generated_Image_naonuinaonuinaon](./images/Gemini_Generated_Image_naonuinaonuinaon.png)
+
+
+
 This README consolidates everything from `NEW_IMPLEMENTATION.MD` + updates it into one single tracking file.
 
-### Key changes you implemented
+![Gemini_Generated_Image_9n7y2a9n7y2a9n7y](./images/Gemini_Generated_Image_9n7y2a9n7y2a9n7y.png)
+
+
+### Key changes implemented
 
 - 🌐 **Replaced ngrok** with **Cloudflare Tunnel (cloudflared)**
 - 🧠 **Added an auto-start Python runner** that:
@@ -33,10 +41,14 @@ This README consolidates everything from `NEW_IMPLEMENTATION.MD` + updates it in
 
 ## 🧩 Tech stack
 
+![Project Tech Stack](./images/Tech_stack.png)
+
+
 | Tool | Purpose |
 |---|---|
 | **n8n** | Workflow automation engine |
 | **Telegram Bot API** | Receive messages + send QR images |
+
 | **Cloudflare Tunnel** | Public HTTPS tunnel for your local webhook |
 | **QRServer API** | Generates the QR image |
 | **Python** | Auto-start script (starts tunnel + sets env vars + starts n8n) |
@@ -44,6 +56,9 @@ This README consolidates everything from `NEW_IMPLEMENTATION.MD` + updates it in
 ---
 
 ## 🔧 Final architecture
+
+![Final architecture](./images/Final_architecture.png)
+
 
 ```txt
 Telegram User
@@ -62,6 +77,8 @@ Telegram Send Photo (QR image)
 ---
 
 ## 🤔 Why Cloudflare Tunnel over ngrok? (the friendly comparison)
+
+![Final architecture](./images/Why_Cloudflare_Tunnel_over_ngrok_(the_friendly_comparison).png)
 
 ### Cloudflare Tunnel advantages ✅
 
@@ -96,6 +113,9 @@ Send Photo
 ---
 
 ## 🧾 Files in this folder
+
+![Final architecture](./images/Files_in_this_folder.png)
+
 
 - `Telegram bot - QR code generator.json` → the exported n8n workflow to import
 - `CONFIG.MD` → (older ngrok guide kept for reference)
@@ -196,6 +216,9 @@ Core idea:
 
 ## 📣 How to use the bot
 
+![How to use the bot](./images/How_to_use_the_bot.png)
+
+
 Send a message like:
 
 ```txt
@@ -219,6 +242,9 @@ Expected result:
 ---
 
 ## ⚠️ Common problems (and the actual reasons)
+
+![Common [problems]](./images/Common_problems_(and_the_actual_reasons).png)
+
 
 ### 1) HTTPS webhook error
 
