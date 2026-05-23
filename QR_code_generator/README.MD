@@ -48,7 +48,6 @@ This README consolidates everything from `NEW_IMPLEMENTATION.MD` + updates it in
 |---|---|
 | **n8n** | Workflow automation engine |
 | **Telegram Bot API** | Receive messages + send QR images |
-
 | **Cloudflare Tunnel** | Public HTTPS tunnel for your local webhook |
 | **QRServer API** | Generates the QR image |
 | **Python** | Auto-start script (starts tunnel + sets env vars + starts n8n) |
