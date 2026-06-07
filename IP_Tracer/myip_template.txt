@@ -1,0 +1,100 @@
+
+╔══════════════════════════════════════╗
+║     🕵️ *YOUR IP — THE TRUTH*        ║
+╚══════════════════════════════════════╝
+
+━━ 📌 *VERIFIED* ━━
+_Directly from IPStack_
+
+━━ 🌐 *YOUR NETWORK* ━━
+🌍 *Public IP:* `{{ JSON.parse($json.data).ip }}`
+🔢 *Version:* {{ JSON.parse($json.data).type }}
+🔗 *ASN:* AS{{ JSON.parse($json.data).connection.asn !== "N/A" ? JSON.parse($json.data).connection.asn : "" }}
+🏢 *ISP:* {{ JSON.parse($json.data).connection.isp }}
+{{ JSON.parse($json.data).connection.carrier ? JSON.parse($json.data).connection.carrier : "" }}
+{{ JSON.parse($json.data).connection.organization_type ? JSON.parse($json.data).connection.organization_type : "" }}
+
+━━ 📍 *YOUR LOCATION* ━━
+{{ JSON.parse($json.data).location.country_flag_emoji }} *Country:* {{ JSON.parse($json.data).country_name }} ({{ JSON.parse($json.data).country_code }})
+🗺 *Region:* {{ JSON.parse($json.data).region_name }} ({{ JSON.parse($json.data).region_code }})
+🏙 *City:* {{ JSON.parse($json.data).city }}
+{{ JSON.parse($json.data).zip !== "N/A" ? JSON.parse($json.data).zip : "" }}
+🌐 *Coords:* `{{ JSON.parse($json.data).latitude }}, {{ JSON.parse($json.data).longitude }}`
+{{ JSON.parse($json.data).location.capital !== "N/A" ? JSON.parse($json.data).location.capital : "" }}
+
+━━ 🌍 *COUNTRY* ━━
+🌎 *Continent:* {{ JSON.parse($json.data).continent_name }} ({{ JSON.parse($json.data).continent_code }})
+📞 *Calling:* +{{ JSON.parse($json.data).location.calling_code }}
+🇪🇺 *EU:* {{ JSON.parse($json.data).location.is_eu === true ? "✅ Yes" : "❌ No" }}
+
+━━ 🕒 *YOUR TIME* ━━
+🕐 *Timezone:* {{ JSON.parse($json.data).time_zone.id }}
+⏰ *Current:* {{ JSON.parse($json.data).time_zone.current_time }}
+⚖️ *UTC:* ("UTC" + (JSON.parse($json.data).time_zone.gmt_offset / 3600 >= 0 ? "+" : "") + JSON.parse($json.data).time_zone.gmt_offset / 3600)
+☀️ *DST:* {{ JSON.parse($json.data).time_zone.is_daylight_saving === true ? "🟢 Enabled" : "⚪ Disabled" }}
+
+━━ 💰 *CURRENCY* ━━
+💵 {{ JSON.parse($json.data).currency.name }} ({{ JSON.parse($json.data).currency.code }}) {{ JSON.parse($json.data).currency.symbol }}
+
+━━ 🗣 *LANGUAGE* ━━
+💬 {{ JSON.parse($json.data).location.languages[0].name }} ({{ JSON.parse($json.data).location.languages[0].code }})
+
+━━ 🧠 *DERIVED* ━━
+_Calculated from available data_
+
+━━ ☁️ *YOUR CONNECTION* ━━
+🔌 *Type:* {{ JSON.parse($json.data).connection_type }}
+📡 *Routing:* {{ JSON.parse($json.data).ip_routing_type }}
+📶 *Speed:* {{ JSON.parse($json.data).connection_type === "tx" ? "🔴 High (Datacenter/Transit)" : JSON.parse($json.data).connection_type === "mobile wireless" ? "🟡 Medium (Mobile/Cellular)" : JSON.parse($json.data).connection_type === "cable" ? "🔴 High (Cable)" : JSON.parse($json.data).connection_type === "dsl" ? "🟡 Medium (DSL)" : JSON.parse($json.data).connection_type === "mobile" ? "🟡 Medium (Mobile)" : "🟢 Low" }}
+🔒 *Stability:* {{ JSON.parse($json.data).ip_routing_type === "fixed" ? "🟢 Stable (Fixed routing)" : JSON.parse($json.data).ip_routing_type === "mobile gateway" ? "🟡 Dynamic (Changes frequently)" : "🟡 Unknown" }}
+
+━━ 🏠 *YOUR PROFILE* ━━
+👤 *Appear as:* {{ JSON.parse($json.data).connection_type === "mobile wireless" || JSON.parse($json.data).ip_routing_type === "mobile gateway" ? "📱 Mobile Internet User" : JSON.parse($json.data).connection_type === "tx" ? "☁️ Datacenter / Cloud" : "🏠 Home Broadband User" }}
+🏡 *Home User:* {{ JSON.parse($json.data).connection.home === true ? "🔴 Likely" : "🟢 Unlikely" }}
+📱 *Mobile:* {{ JSON.parse($json.data).connection_type === "mobile wireless" ? "🔴 Yes" : "🟢 No" }}
+🏷 *Type:* {{ JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf("Cloudflare") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Vultr") >= 0 || JSON.parse($json.data).connection.isp.indexOf("AWS") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Amazon") >= 0 || JSON.parse($json.data).connection.isp.indexOf("DigitalOcean") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Azure") >= 0) ? "🌐 CDN / Proxy" : JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf("Internet Hosting") >= 0 ? "☁️ Datacenter / Cloud" : JSON.parse($json.data).connection_type === "mobile wireless" || JSON.parse($json.data).connection_type === "mobile" ? "📱 Mobile Network" : JSON.parse($json.data).connection.home === true ? "🏠 Residential" : "🔌 General" }}
+🎯 *Likely Use:* {{ JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf("Internet Hosting") >= 0 ? "🖥️ Web Hosting / API" : JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf("Cloudflare") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Vultr") >= 0 || JSON.parse($json.data).connection.isp.indexOf("AWS") >= 0 || JSON.parse($json.data).connection.isp.indexOf("DigitalOcean") >= 0) ? "☁️ CDN / VPS Endpoint" : JSON.parse($json.data).connection_type === "mobile wireless" || JSON.parse($json.data).connection_type === "mobile" ? "📱 End-User Device" : JSON.parse($json.data).connection.home === true ? "🏠 Home User" : JSON.parse($json.data).connection_type === "tx" ? "☁️ Server / VPS" : "💻 General Purpose" }}
+
+━━ 🧭 *GEOGRAPHY* ━━
+🌍 *Hemisphere:* {{ JSON.parse($json.data).latitude >= 0 ? "Northern" : "Southern" }}, {{ JSON.parse($json.data).longitude >= 0 ? "Eastern" : "Western" }}
+🗺 [View on Maps]({{ "https://www.google.com/maps?q=" + JSON.parse($json.data).latitude + "," + JSON.parse($json.data).longitude }})
+🌍 [OpenStreetMap]({{ "https://www.openstreetmap.org/?mlat=" + JSON.parse($json.data).latitude + "&mlon=" + JSON.parse($json.data).longitude }})
+🎯 *Precision:* {{ JSON.parse($json.data).city && JSON.parse($json.data).city !== "N/A" && JSON.parse($json.data).zip && JSON.parse($json.data).zip !== "N/A" ? "📌 High (City + ZIP)" : JSON.parse($json.data).city && JSON.parse($json.data).city !== "N/A" ? "📍 Medium (City-level)" : "🌐 Low (Country-level)" }}
+
+━━ 🕒 *ACTIVITY* ━━
+🕐 *UTC:* ("UTC" + (JSON.parse($json.data).time_zone.gmt_offset / 3600 >= 0 ? "+" : "") + JSON.parse($json.data).time_zone.gmt_offset / 3600)
+🌙 *Mood:* {{ parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 6 ? "🌙 Dead of night" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 12 ? "☀️ Morning" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 17 ? "🌤️ Afternoon" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 21 ? "🌆 Evening" : "🌃 Late night" }}
+💼 *Hours:* {{ (parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) >= 9 && parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 17) ? "🟢 Business hours — you should be working" : "🌙 Off hours — time to relax" }}
+
+━━ 📊 *YOUR RISK* ━━
+📈 *Score:* {{ JSON.parse($json.data).connection_type === "tx" ? "30" : JSON.parse($json.data).connection_type === "mobile wireless" ? "20" : "10" }}/100
+🏷 *Level:* {{ JSON.parse($json.data).connection_type === "tx" ? "🟡 Medium" : "🟢 Low" }}
+💡 *Advice:* {{ JSON.parse($json.data).connection_type === "mobile wireless" ? "📱 Mobile IPs change often — normal for cellular" : JSON.parse($json.data).connection_type === "tx" ? "⚠️ Datacenter IP — unusual for personal use" : "🟢 Standard home connection — all good" }}
+🛡 *Trust:* {{ JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf("Cloudflare") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Vultr") >= 0 || JSON.parse($json.data).connection.isp.indexOf("AWS") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Amazon") >= 0 || JSON.parse($json.data).connection.isp.indexOf("DigitalOcean") >= 0 || JSON.parse($json.data).connection.isp.indexOf("Azure") >= 0) ? "🔴 Low (Proxy/CDN)" : JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf("Internet Hosting") >= 0 ? "🟡 Medium (Datacenter)" : JSON.parse($json.data).connection_type === "mobile wireless" || JSON.parse($json.data).connection_type === "mobile" ? "🟢 High (Residential)" : "🟡 Medium (Unclassified)" }}
+
+{{ $json.current || $json.results ? "━━ 🔮 ENRICHED ━━\n_Third-party_\n\n" : "" }}
+{{ $json.current ? "━━ 🌤 WEATHER ━━\n🌡 " + ($json.current.temperature_2m || "") + "°C 💧 " + ($json.current.relative_humidity_2m || "") + "% 💨 " + ($json.current.wind_speed_10m || "") + " km/h\n\n" : "" }}
+{{ $json.results ? "━━ 🌅 SUN ━━\n🌅 Rise: " + ($json.results.sunrise || "") + "\n🌇 Set: " + ($json.results.sunset || "") + "\n\n" : "" }}
+━━ 📋 *SUMMARY* ━━
+
+Your IP (`{{ JSON.parse($json.data).ip }}`) is assigned by {{ JSON.parse($json.data).connection.isp }}, connecting from {{ JSON.parse($json.data).city }}, {{ JSON.parse($json.data).country_name }}.
+
+{{ JSON.parse($json.data).connection_type === "mobile wireless" ? "📱 Mobile connection — IP changes as you move." : "🏠 Fixed connection — IP is relatively stable." }}
+
+🛡 *No anonymization detected with available data.*
+
+🏷 *Risk:* {{ JSON.parse($json.data).connection_type === "tx" ? "🟡 Medium" : "🟢 Low" }}
+🎯 *Confidence:* MEDIUM
+💡 *Advice:* {{ JSON.parse($json.data).connection_type === "mobile wireless" ? "📱 Normal mobile behavior" : JSON.parse($json.data).connection_type === "tx" ? "⚠️ Datacenter — verify" : "🟢 No action needed" }}
+
+━━ ℹ️ *NOTES* ━━
+✅ *Verified* — Directly from IPStack API.
+🧠 *Derived* — Calculated from available data.
+{{ $json.current || $json.results ? "🔮 Enriched — Third-party services.\n" : "" }}
+
+⚠️ Geolocation is approximate.
+⚠️ Analyzes network identity, not device.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤖 *TracedIP Bot*
+📡 [ipstack.com](https://ipstack.com)

@@ -1,0 +1,420 @@
+{
+  "name": "IPStack Telegram Intelligence Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        64
+      ],
+      "id": "706c37c7-4a8c-4715-8fa1-a97ba561dc24",
+      "name": "Telegram Trigger",
+      "webhookId": "173c1985-6d38-4323-9bbb-aecf20afcf8c",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "2IPWphU1Op665DZN",
+          "name": "Trace IP address"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text.trim() }}",
+                    "rightValue": "^(?!(?:0+\\.){3}0+)(?:(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    },
+                    "id": "b621889b-2ce3-43a6-af95-69e4cbf824e5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Standard lookup"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "823aa505-f731-419e-be5d-d085bded9951",
+                    "leftValue": "={{ $json.message.text.trim() }}",
+                    "rightValue": "^\\/myip$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Requester IP lookup"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3afafdd3-20b5-4fd1-b21d-a6793af08a76",
+                    "leftValue": "={{ $json.message.text.trim() }}",
+                    "rightValue": "^(?!(?:0+\\.){3}0+)(?:(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d), ?(?!(?:0+\\.){3}0+)(?:(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)(?:, ?(?!(?:0+\\.){3}0+)(?:(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d))*$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bulk lookup"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a1dc70f8-70e2-4bbd-88cd-71c2f61dbdf5",
+                    "leftValue": "={{ $json.message.text.trim() }}",
+                    "rightValue": "^[\\s\\S]*$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Invalid Input"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        32
+      ],
+      "id": "13e858f1-c39d-4e50-9361-5a368679b5b0",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.ipstack.com/{{ $('Telegram Trigger').item.json.message.text }}?access_key=6dc477645d5d28164c031cd4d42c810b",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        -224
+      ],
+      "id": "53b669a0-6056-485c-baff-12deec9112f6",
+      "name": "Single IP request"
+    },
+    {
+      "parameters": {
+        "url": "https://api.ipstack.com/check?access_key=6dc477645d5d28164c031cd4d42c810b",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        -32
+      ],
+      "id": "b040312b-58fd-4e3a-906c-ffb8e1c8f1d0",
+      "name": "User IP request"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.ipstack.com/{{ $json.message.text }}?access_key=6dc477645d5d28164c031cd4d42c810b",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        160
+      ],
+      "id": "32ed1cd9-549c-4795-96fa-9185ec7c6039",
+      "name": "Bulk IP request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── BULK IP REPORT ──────────────────────────────────\n// Each item = one IP from the bulk response\nconst allItems = $input.all();\nconst chatId = (allItems.length > 0 && allItems[0].json.chatId) || 0;\n\nlet msg = '';\nmsg += '╔══════════════════════════════════════╗\\n';\nmsg += '║   📊 *BULK IP INTELLIGENCE REPORT*  ║\\n';\nmsg += '╚══════════════════════════════════════╝\\n\\n';\n\n// ─── PARSE ──────────────────────────────────────\nconst results = [];\nconst errors = [];\n\nfor (const item of allItems) {\n  const r = item.json;\n  // Handle both raw JSON and stringified data\n  let data = r;\n  if (r.data && typeof r.data === 'string') {\n    try {\n      const parsed = JSON.parse(r.data);\n      if (Array.isArray(parsed)) {\n        parsed.forEach(p => results.push(p));\n        continue;\n      } else if (parsed.ip) {\n        results.push(parsed);\n        continue;\n      }\n    } catch (e) { /* not JSON */ }\n  }\n  if (r.ip) results.push(r);\n  else if (r.error || r.success === false) errors.push(r);\n}\n\nif (results.length === 0) {\n  msg += '⚠️ No valid IP data returned from the API.\\n';\n  return [{ json: { chatId, message: msg, parse_mode: 'Markdown' } }];\n}\n\nif (errors.length > 0) {\n  msg += '⚠️ ' + errors.length + ' IP(s) returned API errors. Results may be incomplete.\\n\\n';\n}\n\nmsg += '━━ 📋 *IP COMPARISON TABLE* ━━\\n\\n';\n\n// Helper to format a single IP entry\nfunction describeIP(d) {\n  const loc = d.location || {};\n  const conn = d.connection || {};\n  const tz = d.time_zone || {};\n  const flag = loc.country_flag_emoji || '';\n  const country = d.country_name || d.country_code || 'Unknown';\n  const city = d.city || '';\n  const region = d.region_name || '';\n  const isp = conn.isp || 'Unknown';\n  const asn = conn.asn ? 'AS' + conn.asn : '';\n  const org = conn.organization_type || '';\n  const connType = d.connection_type || '';\n  const routing = d.ip_routing_type || '';\n  const lat = d.latitude;\n  const lon = d.longitude;\n\n  // Inline risk score\n  const sec = d.security || {};\n  let risk = 0;\n  if (sec.is_proxy) risk += 40;\n  if (sec.is_tor) risk += 50;\n  if (sec.is_crawler) risk += 20;\n  if (sec.is_vpn) risk += 30;\n  if (sec.threat_level === 'medium') risk += 30;\n  if (sec.threat_level === 'high') risk += 70;\n\n  risk = Math.min(100, Math.max(0, risk));\n  const rEmoji = risk <= 15 ? '🟢' : risk <= 50 ? '🟡' : '🔴';\n  const rLabel = risk <= 15 ? 'Low' : risk <= 50 ? 'Medium' : 'High';\n\n  // Hemisphere\n  const hemi = lat != null ? (lat >= 0 ? 'Northern' : 'Southern') + ', ' + (lon >= 0 ? 'Eastern' : 'Western') : '';\n  const coords = lat != null && lon != null ? lat + ', ' + lon : '';\n\n  // Location Precision\n  const prec = (d.city && d.zip) ? '📌 High (City+ZIP)' : d.city ? '📍 Medium (City)' : '🌐 Low (Country)';\n\n  // ISP Category / Hosting badge\n  const isCDN = isp.indexOf('Cloudflare') >= 0 || isp.indexOf('Vultr') >= 0 || isp.indexOf('AWS') >= 0 || isp.indexOf('Amazon') >= 0 || isp.indexOf('DigitalOcean') >= 0 || isp.indexOf('Azure') >= 0;\n  const isHosting = org.indexOf('Internet Hosting') >= 0;\n  const isMobile = connType === 'mobile wireless' || connType === 'mobile';\n  const typeBadge = isCDN ? '🌐 CDN/Proxy' : isHosting ? '☁️ Datacenter' : isMobile ? '📱 Mobile' : (d.connection && d.connection.home) ? '🏠 Residential' : '🔌 General';\n  const useCase = isHosting ? '🖥️ Web Hosting/API' : isCDN ? '☁️ CDN/VPS' : isMobile ? '📱 End-User' : (d.connection && d.connection.home) ? '🏠 Personal' : connType === 'tx' ? '☁️ Server/VPS' : '💻 General';\n  const trust = isCDN ? '🔴 Low (Proxy/CDN)' : isHosting ? '🟡 Medium (DC)' : isMobile ? '🟢 High (Mobile)' : '🟡 Medium';\n  // Time mood\n  let mood = '';\n  if (tz.current_time) {\n    try {\n      const h = parseInt(tz.current_time.substring(11,13));\n      if (h < 6) mood = '🌙 Night';\n      else if (h < 12) mood = '☀️ Morning';\n      else if (h < 17) mood = '🌤️ Afternoon';\n      else if (h < 21) mood = '🌆 Evening';\n      else mood = '🌃 Late';\n    } catch(e) { mood = ''; }\n  }\n\n  let entry = '';\n  entry += '━━ 🌐 ' + flag + ' *' + d.ip + '* ━━\\n';\n  entry += '📍 ' + city + (city && region ? ', ' : '') + region + (country ? ', ' : '') + country + '\\n';\n  entry += '🏢 ' + isp;\n  if (asn) entry += ' (' + asn + ')';\n  entry += '\\n';\n  if (org) entry += '🏭 ' + org + '\\n';\n  if (connType || routing) entry += '🔌 ' + connType + (connType && routing ? ' / ' : '') + routing + '\\n';\n  if (coords) entry += '🌐 ' + coords + '\\n';\n  if (hemi) entry += '🧭 ' + hemi + '\\n';\n  if (mood) entry += '🕐 ' + mood + ' (' + (tz.current_time || '') + ')\\n';\n  entry += '🛡 Risk: ' + rEmoji + ' ' + rLabel + ' (' + risk + '/100)\\n';\n  entry += '🎯 ' + prec + ' | ' + typeBadge + '\\n';\n  entry += '🛡 Trust: ' + trust + ' | ' + useCase + '\\n';\n  entry += '\\n';\n\n  return entry;\n}\n\n// Generate individual entries (compact)\nfor (let i = 0; i < results.length; i++) {\n  const d = results[i];\n  msg += describeIP(d);\n\n  // Break long messages — Telegram limit ~4000 chars\n  if (msg.length > 3500 && i < results.length - 1) {\n    msg += '... *' + (results.length - i - 1) + ' more IP(s)*\\n\\n';\n    break;\n  }\n}\n\n// ─── EXECUTIVE SUMMARY ──────────────────────────\nmsg += '━━ 📊 *EXECUTIVE SUMMARY* ━━\\n\\n';\n\nconst uniqueCountries = [...new Set(results.map(d => d.country_name).filter(Boolean))];\nconst uniqueISPs = [...new Set(results.map(d => (d.connection || {}).isp).filter(Boolean))];\nconst avgRisk = results.reduce((s, d) => {\n  const sec = d.security || {};\n  let r = 0;\n  if (sec.is_proxy) r += 40;\n  if (sec.is_tor) r += 50;\n  if (sec.is_crawler) r += 20;\n  if (sec.is_vpn) r += 30;\n  if (sec.threat_level === 'medium') r += 30;\n  if (sec.threat_level === 'high') r += 70;\n  return s + Math.min(100, Math.max(0, r));\n}, 0) / results.length;\n\nconst dcIps = results.filter(d => (d.connection || {}).isp === 'Cloudflare' || (d.connection || {}).isp === 'The Constant Company LLC').length;\nconst mobileIps = results.filter(d => d.connection_type === 'mobile wireless').length;\n\nmsg += '📦 *Total IPs:* ' + results.length + '\\n';\nmsg += '🌍 *Countries:* ' + (uniqueCountries.length > 0 ? uniqueCountries.join(', ') : 'N/A') + '\\n';\nmsg += '🏢 *ISPs:* ' + (uniqueISPs.length > 0 ? uniqueISPs.join(', ') : 'N/A') + '\\n';\nmsg += '📈 *Avg Risk:* ' + avgRisk.toFixed(0) + '/100 — ' + (avgRisk <= 15 ? '🟢 Low' : avgRisk <= 50 ? '🟡 Medium' : '🔴 High') + '\\n';\nif (dcIps > 0) msg += '☁️ *Datacenter IPs:* ' + dcIps + '\\n';\nif (mobileIps > 0) msg += '📱 *Mobile IPs:* ' + mobileIps + '\\n';\nmsg += '\\n';\n\nmsg += '💡 *Recommendation:* ';\nif (avgRisk <= 15) msg += 'No significant security concerns across the IP set.';\nelse if (avgRisk <= 50) msg += 'Some IPs show elevated risk. Review flagged entries.';\nelse msg += '⚠️ Multiple high-risk IPs detected. Immediate review recommended.';\nmsg += '\\n\\n';\n\n// ─── NOTES ──────────────────────────────────────\nmsg += '━━ ℹ️ *NOTES* ━━\\n';\nmsg += '✅ Data from IPStack API.\\n';\nmsg += '🧠 Risk scores calculated inline from available data.\\n';\nmsg += '⚠️ Geolocation is approximate.\\n';\nmsg += '\\n';\nmsg += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n';\nmsg += '🤖 *TracedIP Intelligence Bot*\\n';\nmsg += '📡 [ipstack.com](https://ipstack.com)\\n';\n\nreturn [{ json: { chatId, message: msg, parse_mode: 'Markdown' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        160
+      ],
+      "id": "30cfafad-3a0d-407c-8c13-8aef07988771",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=\n╔══════════════════════════════════════╗\n║     🕵️ *YOUR IP — THE TRUTH*        ║\n╚══════════════════════════════════════╝\n\n━━ 📌 *VERIFIED* ━━\n_Directly from IPStack_\n\n━━ 🌐 *YOUR NETWORK* ━━\n🌍 *Public IP:* `{{ JSON.parse($json.data).ip }}`\n🔢 *Version:* {{ JSON.parse($json.data).type }}\n🔗 *ASN:* AS{{ JSON.parse($json.data).connection.asn !== \"N/A\" ? JSON.parse($json.data).connection.asn : \"\" }}\n🏢 *ISP:* {{ JSON.parse($json.data).connection.isp }}\n{{ JSON.parse($json.data).connection.carrier ? JSON.parse($json.data).connection.carrier : \"\" }}\n{{ JSON.parse($json.data).connection.organization_type ? JSON.parse($json.data).connection.organization_type : \"\" }}\n\n━━ 📍 *YOUR LOCATION* ━━\n{{ JSON.parse($json.data).location.country_flag_emoji }} *Country:* {{ JSON.parse($json.data).country_name }} ({{ JSON.parse($json.data).country_code }})\n🗺 *Region:* {{ JSON.parse($json.data).region_name }} ({{ JSON.parse($json.data).region_code }})\n🏙 *City:* {{ JSON.parse($json.data).city }}\n{{ JSON.parse($json.data).zip !== \"N/A\" ? JSON.parse($json.data).zip : \"\" }}\n🌐 *Coords:* `{{ JSON.parse($json.data).latitude }}, {{ JSON.parse($json.data).longitude }}`\n{{ JSON.parse($json.data).location.capital !== \"N/A\" ? JSON.parse($json.data).location.capital : \"\" }}\n\n━━ 🌍 *COUNTRY* ━━\n🌎 *Continent:* {{ JSON.parse($json.data).continent_name }} ({{ JSON.parse($json.data).continent_code }})\n📞 *Calling:* +{{ JSON.parse($json.data).location.calling_code }}\n🇪🇺 *EU:* {{ JSON.parse($json.data).location.is_eu === true ? \"✅ Yes\" : \"❌ No\" }}\n\n━━ 🕒 *YOUR TIME* ━━\n🕐 *Timezone:* {{ JSON.parse($json.data).time_zone.id }}\n⏰ *Current:* {{ JSON.parse($json.data).time_zone.current_time }}\n⚖️ *UTC:* (\"UTC\" + (JSON.parse($json.data).time_zone.gmt_offset / 3600 >= 0 ? \"+\" : \"\") + JSON.parse($json.data).time_zone.gmt_offset / 3600)\n☀️ *DST:* {{ JSON.parse($json.data).time_zone.is_daylight_saving === true ? \"🟢 Enabled\" : \"⚪ Disabled\" }}\n\n━━ 💰 *CURRENCY* ━━\n💵 {{ JSON.parse($json.data).currency.name }} ({{ JSON.parse($json.data).currency.code }}) {{ JSON.parse($json.data).currency.symbol }}\n\n━━ 🗣 *LANGUAGE* ━━\n💬 {{ JSON.parse($json.data).location.languages[0].name }} ({{ JSON.parse($json.data).location.languages[0].code }})\n\n━━ 🧠 *DERIVED* ━━\n_Calculated from available data_\n\n━━ ☁️ *YOUR CONNECTION* ━━\n🔌 *Type:* {{ JSON.parse($json.data).connection_type }}\n📡 *Routing:* {{ JSON.parse($json.data).ip_routing_type }}\n📶 *Speed:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🔴 High (Datacenter/Transit)\" : JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"🟡 Medium (Mobile/Cellular)\" : JSON.parse($json.data).connection_type === \"cable\" ? \"🔴 High (Cable)\" : JSON.parse($json.data).connection_type === \"dsl\" ? \"🟡 Medium (DSL)\" : JSON.parse($json.data).connection_type === \"mobile\" ? \"🟡 Medium (Mobile)\" : \"🟢 Low\" }}\n🔒 *Stability:* {{ JSON.parse($json.data).ip_routing_type === \"fixed\" ? \"🟢 Stable (Fixed routing)\" : JSON.parse($json.data).ip_routing_type === \"mobile gateway\" ? \"🟡 Dynamic (Changes frequently)\" : \"🟡 Unknown\" }}\n\n━━ 🏠 *YOUR PROFILE* ━━\n👤 *Appear as:* {{ JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).ip_routing_type === \"mobile gateway\" ? \"📱 Mobile Internet User\" : JSON.parse($json.data).connection_type === \"tx\" ? \"☁️ Datacenter / Cloud\" : \"🏠 Home Broadband User\" }}\n🏡 *Home User:* {{ JSON.parse($json.data).connection.home === true ? \"🔴 Likely\" : \"🟢 Unlikely\" }}\n📱 *Mobile:* {{ JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"🔴 Yes\" : \"🟢 No\" }}\n🏷 *Type:* {{ JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf(\"Cloudflare\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Vultr\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"AWS\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Amazon\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"DigitalOcean\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Azure\") >= 0) ? \"🌐 CDN / Proxy\" : JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf(\"Internet Hosting\") >= 0 ? \"☁️ Datacenter / Cloud\" : JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).connection_type === \"mobile\" ? \"📱 Mobile Network\" : JSON.parse($json.data).connection.home === true ? \"🏠 Residential\" : \"🔌 General\" }}\n🎯 *Likely Use:* {{ JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf(\"Internet Hosting\") >= 0 ? \"🖥️ Web Hosting / API\" : JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf(\"Cloudflare\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Vultr\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"AWS\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"DigitalOcean\") >= 0) ? \"☁️ CDN / VPS Endpoint\" : JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).connection_type === \"mobile\" ? \"📱 End-User Device\" : JSON.parse($json.data).connection.home === true ? \"🏠 Home User\" : JSON.parse($json.data).connection_type === \"tx\" ? \"☁️ Server / VPS\" : \"💻 General Purpose\" }}\n\n━━ 🧭 *GEOGRAPHY* ━━\n🌍 *Hemisphere:* {{ JSON.parse($json.data).latitude >= 0 ? \"Northern\" : \"Southern\" }}, {{ JSON.parse($json.data).longitude >= 0 ? \"Eastern\" : \"Western\" }}\n🗺 [View on Maps]({{ \"https://www.google.com/maps?q=\" + JSON.parse($json.data).latitude + \",\" + JSON.parse($json.data).longitude }})\n🌍 [OpenStreetMap]({{ \"https://www.openstreetmap.org/?mlat=\" + JSON.parse($json.data).latitude + \"&mlon=\" + JSON.parse($json.data).longitude }})\n🎯 *Precision:* {{ JSON.parse($json.data).city && JSON.parse($json.data).city !== \"N/A\" && JSON.parse($json.data).zip && JSON.parse($json.data).zip !== \"N/A\" ? \"📌 High (City + ZIP)\" : JSON.parse($json.data).city && JSON.parse($json.data).city !== \"N/A\" ? \"📍 Medium (City-level)\" : \"🌐 Low (Country-level)\" }}\n\n━━ 🕒 *ACTIVITY* ━━\n🕐 *UTC:* (\"UTC\" + (JSON.parse($json.data).time_zone.gmt_offset / 3600 >= 0 ? \"+\" : \"\") + JSON.parse($json.data).time_zone.gmt_offset / 3600)\n🌙 *Mood:* {{ parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 6 ? \"🌙 Dead of night\" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 12 ? \"☀️ Morning\" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 17 ? \"🌤️ Afternoon\" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 21 ? \"🌆 Evening\" : \"🌃 Late night\" }}\n💼 *Hours:* {{ (parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) >= 9 && parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 17) ? \"🟢 Business hours — you should be working\" : \"🌙 Off hours — time to relax\" }}\n\n━━ 📊 *YOUR RISK* ━━\n📈 *Score:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"30\" : JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"20\" : \"10\" }}/100\n🏷 *Level:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🟡 Medium\" : \"🟢 Low\" }}\n💡 *Advice:* {{ JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"📱 Mobile IPs change often — normal for cellular\" : JSON.parse($json.data).connection_type === \"tx\" ? \"⚠️ Datacenter IP — unusual for personal use\" : \"🟢 Standard home connection — all good\" }}\n🛡 *Trust:* {{ JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf(\"Cloudflare\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Vultr\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"AWS\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Amazon\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"DigitalOcean\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Azure\") >= 0) ? \"🔴 Low (Proxy/CDN)\" : JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf(\"Internet Hosting\") >= 0 ? \"🟡 Medium (Datacenter)\" : JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).connection_type === \"mobile\" ? \"🟢 High (Residential)\" : \"🟡 Medium (Unclassified)\" }}\n\n{{ $json.current || $json.results ? \"━━ 🔮 ENRICHED ━━\\n_Third-party_\\n\\n\" : \"\" }}\n{{ $json.current ? \"━━ 🌤 WEATHER ━━\\n🌡 \" + ($json.current.temperature_2m || \"\") + \"°C 💧 \" + ($json.current.relative_humidity_2m || \"\") + \"% 💨 \" + ($json.current.wind_speed_10m || \"\") + \" km/h\\n\\n\" : \"\" }}\n{{ $json.results ? \"━━ 🌅 SUN ━━\\n🌅 Rise: \" + ($json.results.sunrise || \"\") + \"\\n🌇 Set: \" + ($json.results.sunset || \"\") + \"\\n\\n\" : \"\" }}\n━━ 📋 *SUMMARY* ━━\n\nYour IP (`{{ JSON.parse($json.data).ip }}`) is assigned by {{ JSON.parse($json.data).connection.isp }}, connecting from {{ JSON.parse($json.data).city }}, {{ JSON.parse($json.data).country_name }}.\n\n{{ JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"📱 Mobile connection — IP changes as you move.\" : \"🏠 Fixed connection — IP is relatively stable.\" }}\n\n🛡 *No anonymization detected with available data.*\n\n🏷 *Risk:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🟡 Medium\" : \"🟢 Low\" }}\n🎯 *Confidence:* MEDIUM\n💡 *Advice:* {{ JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"📱 Normal mobile behavior\" : JSON.parse($json.data).connection_type === \"tx\" ? \"⚠️ Datacenter — verify\" : \"🟢 No action needed\" }}\n\n━━ ℹ️ *NOTES* ━━\n✅ *Verified* — Directly from IPStack API.\n🧠 *Derived* — Calculated from available data.\n{{ $json.current || $json.results ? \"🔮 Enriched — Third-party services.\\n\" : \"\" }}\n\n⚠️ Geolocation is approximate.\n⚠️ Analyzes network identity, not device.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🤖 *TracedIP Bot*\n📡 [ipstack.com](https://ipstack.com)",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        -32
+      ],
+      "id": "da524519-308a-4e04-b74f-24e57202d823",
+      "name": "Requester IP Lookup report",
+      "webhookId": "70c4ccef-d708-44fc-8da9-ac6c82b5699c",
+      "credentials": {
+        "telegramApi": {
+          "id": "2IPWphU1Op665DZN",
+          "name": "Trace IP address"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=\n╔══════════════════════════════════════╗\n║     🌐 *IP INTELLIGENCE REPORT*      ║\n╚══════════════════════════════════════╝\n\n━━ 📌 *VERIFIED INFORMATION* ━━\n_Directly returned by IPStack_\n\n━━ 🌐 *NETWORK* ━━\n🌍 *Public IP:* `{{ JSON.parse($json.data).ip }}`\n{{ JSON.parse($json.data).hostname !== \"N/A\" ? JSON.parse($json.data).hostname : \"\" }}\n🔢 *Version:* {{ JSON.parse($json.data).type }}\n🔗 *ASN:* AS{{ JSON.parse($json.data).connection.asn !== \"N/A\" ? JSON.parse($json.data).connection.asn : \"\" }}\n🏢 *ISP:* {{ JSON.parse($json.data).connection.isp }}\n{{ JSON.parse($json.data).connection.organization_type ? JSON.parse($json.data).connection.organization_type : \"\" }}\n\n━━ 📍 *LOCATION* ━━\n{{ JSON.parse($json.data).location.country_flag_emoji }} *Country:* {{ JSON.parse($json.data).country_name }} ({{ JSON.parse($json.data).country_code }})\n🗺 *Region:* {{ JSON.parse($json.data).region_name }} ({{ JSON.parse($json.data).region_code }})\n🏙 *City:* {{ JSON.parse($json.data).city }}\n{{ JSON.parse($json.data).zip !== \"N/A\" ? JSON.parse($json.data).zip : \"\" }}\n🌐 *Coords:* `{{ JSON.parse($json.data).latitude }}, {{ JSON.parse($json.data).longitude }}`\n{{ JSON.parse($json.data).location.capital !== \"N/A\" ? JSON.parse($json.data).location.capital : \"\" }}\n\n━━ 🌍 *COUNTRY* ━━\n🌎 *Continent:* {{ JSON.parse($json.data).continent_name }} ({{ JSON.parse($json.data).continent_code }})\n📞 *Calling Code:* +{{ JSON.parse($json.data).location.calling_code }}\n🇪🇺 *EU:* {{ JSON.parse($json.data).location.is_eu === true ? \"✅ Yes\" : \"❌ No\" }}\n\n━━ 🕒 *TIME* ━━\n🕐 *Timezone:* {{ JSON.parse($json.data).time_zone.id }}\n⏰ *Local:* {{ JSON.parse($json.data).time_zone.current_time }}\n⚖️ *UTC Offset:* (\"UTC\" + (JSON.parse($json.data).time_zone.gmt_offset / 3600 >= 0 ? \"+\" : \"\") + JSON.parse($json.data).time_zone.gmt_offset / 3600)\n☀️ *DST:* {{ JSON.parse($json.data).time_zone.is_daylight_saving === true ? \"🟢 Enabled\" : \"⚪ Disabled\" }}\n\n━━ 💰 *CURRENCY* ━━\n💵 {{ JSON.parse($json.data).currency.name }} ({{ JSON.parse($json.data).currency.code }}) {{ JSON.parse($json.data).currency.symbol }}\n\n━━ 🗣 *LANGUAGE* ━━\n💬 {{ JSON.parse($json.data).location.languages[0].name }} ({{ JSON.parse($json.data).location.languages[0].code }})\n\n━━ 🧠 *DERIVED INTELLIGENCE* ━━\n_Calculated from available data_\n\n━━ ☁️ *CONNECTION* ━━\n🔌 *Type:* {{ JSON.parse($json.data).connection_type }}\n📡 *Routing:* {{ JSON.parse($json.data).ip_routing_type }}\n📶 *Speed Class:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🔴 High (Datacenter/Transit)\" : JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"🟡 Medium (Mobile/Cellular)\" : JSON.parse($json.data).connection_type === \"cable\" ? \"🔴 High (Cable)\" : JSON.parse($json.data).connection_type === \"dsl\" ? \"🟡 Medium (DSL)\" : JSON.parse($json.data).connection_type === \"mobile\" ? \"🟡 Medium (Mobile)\" : \"🟢 Low\" }}\n🔒 *Stability:* {{ JSON.parse($json.data).ip_routing_type === \"fixed\" ? \"🟢 Stable (Fixed routing)\" : JSON.parse($json.data).ip_routing_type === \"mobile gateway\" ? \"🟡 Dynamic (Changes frequently)\" : \"🟡 Unknown\" }}\n\n━━ 🏠 *PROFILE* ━━\n🏡 *Residential:* {{ JSON.parse($json.data).connection.home === true ? \"🔴 Likely\" : \"🟢 Unlikely\" }}\n📱 *Mobile:* {{ JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"🔴 Yes\" : \"🟢 No\" }}\n🏢 *Business:* {{ JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.includes(\"Business\") ? \"🟡 Possible\" : \"🟢 Unlikely\" }}\n☁️ *Datacenter:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🔴 Likely\" : \"🟢 Unlikely\" }}\n🏷 *Type:* {{ JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf(\"Cloudflare\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Vultr\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"AWS\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Amazon\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"DigitalOcean\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Azure\") >= 0) ? \"🌐 CDN / Proxy\" : JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf(\"Internet Hosting\") >= 0 ? \"☁️ Datacenter / Cloud\" : JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).connection_type === \"mobile\" ? \"📱 Mobile Network\" : JSON.parse($json.data).connection.home === true ? \"🏠 Residential\" : \"🔌 General\" }}\n🎯 *Likely Use:* {{ JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf(\"Internet Hosting\") >= 0 ? \"🖥️ Web Hosting / API\" : JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf(\"Cloudflare\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Vultr\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"AWS\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"DigitalOcean\") >= 0) ? \"☁️ CDN / VPS Endpoint\" : JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).connection_type === \"mobile\" ? \"📱 End-User Device\" : JSON.parse($json.data).connection.home === true ? \"🏠 Home User\" : JSON.parse($json.data).connection_type === \"tx\" ? \"☁️ Server / VPS\" : \"💻 General Purpose\" }}\n\n━━ 🧭 *GEOGRAPHY* ━━\n🌍 *Hemisphere:* {{ JSON.parse($json.data).latitude >= 0 ? \"Northern\" : \"Southern\" }}, {{ JSON.parse($json.data).longitude >= 0 ? \"Eastern\" : \"Western\" }}\n🗺 [Google Maps]({{ \"https://www.google.com/maps?q=\" + JSON.parse($json.data).latitude + \",\" + JSON.parse($json.data).longitude }})\n🌍 [OpenStreetMap]({{ \"https://www.openstreetmap.org/?mlat=\" + JSON.parse($json.data).latitude + \"&mlon=\" + JSON.parse($json.data).longitude }})\n🎯 *Precision:* {{ JSON.parse($json.data).city && JSON.parse($json.data).city !== \"N/A\" && JSON.parse($json.data).zip && JSON.parse($json.data).zip !== \"N/A\" ? \"📌 High (City + ZIP)\" : JSON.parse($json.data).city && JSON.parse($json.data).city !== \"N/A\" ? \"📍 Medium (City-level)\" : \"🌐 Low (Country-level)\" }}\n\n━━ 🕒 *ACTIVITY* ━━\n🕐 *UTC:* (\"UTC\" + (JSON.parse($json.data).time_zone.gmt_offset / 3600 >= 0 ? \"+\" : \"\") + JSON.parse($json.data).time_zone.gmt_offset / 3600)\n🌙 *Period:* {{ parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 6 ? \"🌙 Late Night\" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 12 ? \"☀️ Morning\" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 17 ? \"🌤️ Afternoon\" : parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 21 ? \"🌆 Evening\" : \"🌃 Night\" }}\n💼 *Business Hours:* {{ (parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) >= 9 && parseInt(JSON.parse($json.data).time_zone.current_time.substring(11,13)) < 17) ? \"🟢 Yes (work hours)\" : \"🌙 No (off hours/weekend)\" }}\n\n━━ 📊 *RISK* ━━\n📈 *Score:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"30\" : JSON.parse($json.data).connection_type === \"mobile wireless\" ? \"20\" : \"10\" }}/100\n🏷 *Level:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🟡 Medium\" : \"🟢 Low\" }}\n💡 *Advice:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"⚠️ Datacenter IP — monitor for unusual activity\" : \"🟢 Standard consumer connection — no special concern\" }}\n🛡 *Trust:* {{ JSON.parse($json.data).connection.isp && (JSON.parse($json.data).connection.isp.indexOf(\"Cloudflare\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Vultr\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"AWS\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Amazon\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"DigitalOcean\") >= 0 || JSON.parse($json.data).connection.isp.indexOf(\"Azure\") >= 0) ? \"🔴 Low (Proxy/CDN)\" : JSON.parse($json.data).connection.organization_type && JSON.parse($json.data).connection.organization_type.indexOf(\"Internet Hosting\") >= 0 ? \"🟡 Medium (Datacenter)\" : JSON.parse($json.data).connection_type === \"mobile wireless\" || JSON.parse($json.data).connection_type === \"mobile\" ? \"🟢 High (Residential)\" : \"🟡 Medium (Unclassified)\" }}\n\n{{ $json.current || $json.results ? \"━━ 🔮 ENRICHED ━━\\n_Third-party data_\\n\\n\" : \"\" }}\n{{ $json.current ? \"━━ 🌤 WEATHER ━━\\n🌡 \" + ($json.current.temperature_2m || \"\") + \"°C 💧 \" + ($json.current.relative_humidity_2m || \"\") + \"% 💨 \" + ($json.current.wind_speed_10m || \"\") + \" km/h\\n\\n\" : \"\" }}\n{{ $json.results ? \"━━ 🌅 SUN ━━\\n🌅 Rise: \" + ($json.results.sunrise || \"\") + \"\\n🌇 Set: \" + ($json.results.sunset || \"\") + \"\\n\\n\" : \"\" }}\n━━ 📋 *SUMMARY* ━━\n\nIP `{{ JSON.parse($json.data).ip }}` belongs to *{{ JSON.parse($json.data).connection.isp }}*, located in {{ JSON.parse($json.data).city }}, {{ JSON.parse($json.data).country_name }}.\n\n🛡 *No proxy, VPN, or TOR indicators detected with available data.*\n\n🏷 *Risk Level:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"🟡 Medium\" : \"🟢 Low\" }}\n🎯 *Confidence:* MEDIUM\n💡 *Advice:* {{ JSON.parse($json.data).connection_type === \"tx\" ? \"Monitor this connection\" : \"Standard — no action needed\" }}\n\n━━ ℹ️ *NOTES* ━━\n✅ *Verified* — Directly from IPStack API.\n🧠 *Derived* — Calculated from available data.\n{{ $json.current || $json.results ? \"🔮 Enriched — Third-party services.\\n\" : \"\" }}\n\n⚠️ Geolocation is approximate.\n⚠️ Analyzes network identity, not device.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🤖 *TracedIP Bot*\n📡 [ipstack.com](https://ipstack.com)",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        -224
+      ],
+      "id": "a3e5b6a9-64d1-4876-8236-ae47c13bd9e3",
+      "name": "Standard Lookup report",
+      "webhookId": "70c4ccef-d708-44fc-8da9-ac6c82b5699c",
+      "credentials": {
+        "telegramApi": {
+          "id": "2IPWphU1Op665DZN",
+          "name": "Trace IP address"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        160
+      ],
+      "id": "701d8ab7-0b5f-4163-9588-2b1524fb76ee",
+      "name": "Bulk Lookup report",
+      "webhookId": "70c4ccef-d708-44fc-8da9-ac6c82b5699c",
+      "credentials": {
+        "telegramApi": {
+          "id": "2IPWphU1Op665DZN",
+          "name": "Trace IP address"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Nice try {{ $('Telegram Trigger').item.json.message.from.username }}, but that IP looks like it was invented during a power cut. Please retype it in proper format. \nYou sent: {{ $('Telegram Trigger').item.json.message.text }}\nFormat: XXX.XXX.XXX.XXX \nExample: 192.168.1.1",
+        "additionalFields": {
+          "reply_to_message_id": {}
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        352
+      ],
+      "id": "d61aa607-17fd-444e-9a01-1c38de287e4a",
+      "name": "Invalid input reply",
+      "webhookId": "0a4e6558-3b0f-4e95-8efc-dd59a8f4a13c",
+      "credentials": {
+        "telegramApi": {
+          "id": "2IPWphU1Op665DZN",
+          "name": "Trace IP address"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Single IP request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "User IP request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bulk IP request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid input reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Single IP request": {
+      "main": [
+        [
+          {
+            "node": "Standard Lookup report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User IP request": {
+      "main": [
+        [
+          {
+            "node": "Requester IP Lookup report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bulk IP request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Bulk Lookup report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "85f680c5-a1c3-48c7-8d40-1ee824071ac9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7f8bacde112c47fc748772d11341a088e5a9305096bfe1e55b37f2f4b841d2ee"
+  },
+  "id": "D7VavdLhPBk9Oqw2",
+  "tags": [
+    {
+      "updatedAt": "2026-06-07T14:00:46.333Z",
+      "createdAt": "2026-06-07T14:00:46.333Z",
+      "id": "UX28ypOYFZT2yDoL",
+      "name": "IPaddress"
+    },
+    {
+      "updatedAt": "2026-06-07T14:00:41.981Z",
+      "createdAt": "2026-06-07T14:00:41.981Z",
+      "id": "cMTiaVJ8iicja8Mr",
+      "name": "OSINT"
+    }
+  ]
+}
