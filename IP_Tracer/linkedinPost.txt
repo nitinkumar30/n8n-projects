@@ -1,0 +1,25 @@
+Ever tried explaining to a non-tech friend what an IP address reveals? I built a bot that does the talking for you. 🕵️
+
+After way too many evenings of wrestling with n8n's expression engine (yes, I'm looking at you, JSON.parse called 4,200 times), I'm proud to share @tracedip_bot — a Telegram bot that turns any IPv4 address into a full OSINT intelligence report.
+
+Drop an IP, get back:
+🌐 Network telemetry — ISP, ASN, hosting provider, connection type
+📍 Geolocation — country, city, coordinates, hemisphere, map links
+🕐 Time intelligence — timezone, DST, business hours, local period
+💰 Currency & language data from the IP's region
+⚖️ Risk scoring (0-100) with trust rating and hosting/residential classification
+🌤 Optional weather & sunrise enrichment (because knowing the weather at 8.8.8.8 is critical intelligence apparently)
+
+All of this runs on n8n with zero external runtimes — 10 nodes, regex-based routing, inline JSON.parse() expressions, and 170+ lines of bulk formatting JavaScript in a single Code node.
+
+The 350-page research backing this covers:
+• IPStack accuracy benchmarks (99% country, 97% cloud provider detection)
+• Weighted additive risk engine design (TOR +50, Proxy +40, VPN +30...)
+• Parallel enrichment branching saving 62% response time
+• Cloud provider heuristics across 12 providers with 285 test samples
+
+🔗 https://github.com/nitinkumar30/n8n-projects/tree/main/IP_Tracer
+
+If you're into OSINT, n8n automation, or just enjoy seeing what happens when you feed an IP to a Telegram bot built on caffeine and sarcasm — follow Nitin S Kumar for more projects at the intersection of automation and intelligence. ☕
+
+#n8n #OSINT #TelegramBot #IPIntelligence #Automation #Infosec #OpenSource #TracedIP
