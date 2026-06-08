@@ -14,6 +14,10 @@
 
 ## What Is IP Tracing?
 
+
+<p align="center">
+  <img src="./images/What is IP Tracing.png" alt="What Is IP Tracing?" width="100%">
+</p>
 IP tracing (IP geolocation + OSINT) identifies the geographic location, network provider, and security profile of any internet-connected device from its public IPv4 address. Every device online has a public IP assigned by its ISP. By querying intelligence databases like IPStack, you can determine:
 
 | Dimension | What You Learn |
@@ -30,6 +34,10 @@ This bot packages all that intelligence into clean Telegram messages with emoji-
 
 ## Commands
 
+
+<p align="center">
+  <img src="./images/Commands.png" alt="Commands" width="100%">
+</p>
 | Input | What It Does |
 |-------|-------------|
 | `192.168.1.1` | Single IPv4 lookup with full intelligence report |
@@ -41,6 +49,10 @@ This bot packages all that intelligence into clean Telegram messages with emoji-
 
 ## Architecture
 
+
+<p align="center">
+  <img src="./images/Architecture.png" alt="Architecture" width="100%">
+</p>
 ### Data Flow
 
 ```
@@ -81,6 +93,10 @@ This workflow is intentionally minimal. Instead of a dedicated parse/command nod
 
 ### Expression Patterns
 
+
+<p align="center">
+  <img src="./images/Expression patterns.png" alt="Expression Patterns" width="100%">
+</p>
 All Telegram templates use inline `JSON.parse()` because IPStack is called with `responseFormat: "text"`:
 
 ```
@@ -155,6 +171,10 @@ Every IPStack response is rendered into a multi-domain intelligence report.
 
 ## Risk Engine
 
+
+<p align="center">
+  <img src="./images/Risk Engine.png" alt="Risk Engine" width="100%">
+</p>
 The risk score is a **weighted additive model**:
 
 | Indicator | Weight |
@@ -190,6 +210,10 @@ Cloud provider detection uses ISP/organization name pattern matching against 12 
 
 ## Performance
 
+
+<p align="center">
+  <img src="./images/Performance.png" alt="Performance" width="100%">
+</p>
 Average response: **~565ms** (single IP with enrichment)
 - Code node processing: 2–15ms
 - HTTP requests: 150–300ms
@@ -199,6 +223,10 @@ Average response: **~565ms** (single IP with enrichment)
 
 ## Setup
 
+
+<p align="center">
+  <img src="./images/Setup.png" alt="Setup" width="100%">
+</p>
 ### Prerequisites
 
 | Requirement | Source |
@@ -223,6 +251,10 @@ Average response: **~565ms** (single IP with enrichment)
 
 ## Files
 
+
+<p align="center">
+  <img src="./images/Files.png" alt="Files" width="100%">
+</p>
 | File | Purpose |
 |------|---------|
 | `IPStack Telegram Intelligence Bot.json` | Exported n8n workflow — import this into n8n |
@@ -242,6 +274,10 @@ Average response: **~565ms** (single IP with enrichment)
 
 ## Known Limitations
 
+
+<p align="center">
+  <img src="./images/Known Limitations.png" alt="Known Limitations" width="100%">
+</p>
 - **IPStack free tier:** 100 req/month. Bulk lookups beyond quota fail silently.
 - **Telegram 4096 char limit:** Bulk reports with >~15 IPs get truncated.
 - **Geolocation accuracy:** Approximate. Mobile IPs → carrier gateways, anycast → nearest POP.
