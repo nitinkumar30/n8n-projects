@@ -38,6 +38,7 @@ This bot packages all that intelligence into clean Telegram messages with emoji-
 <p align="center">
   <img src="./images/Commands.png" alt="Commands" width="100%">
 </p>
+
 | Input | What It Does |
 |-------|-------------|
 | `192.168.1.1` | Single IPv4 lookup with full intelligence report |
@@ -119,6 +120,10 @@ Key expressions:
 
 ## Intelligence Signals
 
+<p align="center">
+  <img src="./images/Intelligence Engines.png" alt="Intelligence Signals" width="100%">
+</p>
+
 Every IPStack response is rendered into a multi-domain intelligence report.
 
 ### Verified (Raw IPStack Telemetry)
@@ -195,6 +200,10 @@ Cloud provider detection uses ISP/organization name pattern matching against 12 
 
 ## Advantages
 
+<p align="center">
+  <img src="./images/Advantages 1.png" alt="Advantages" width="100%">
+</p>
+
 | Feature | Benefit |
 |---------|---------|
 | **Zero parse nodes** | Switch routing simplifies workflow, reduces node count |
@@ -255,6 +264,7 @@ Average response: **~565ms** (single IP with enrichment)
 <p align="center">
   <img src="./images/Files.png" alt="Files" width="100%">
 </p>
+
 | File | Purpose |
 |------|---------|
 | `IPStack Telegram Intelligence Bot.json` | Exported n8n workflow — import this into n8n |
@@ -291,6 +301,18 @@ Average response: **~565ms** (single IP with enrichment)
 ## License
 
 MIT — Do what you want. Sell it, break it, improve it.
+
+---
+
+## Built With Passion
+
+<p align="center">
+  <img src="./images/Build with passion.png" alt="Built With Passion" width="100%">
+</p>
+
+This project was built on evenings and weekends — not in a boardroom, but on a laptop with curiosity, coffee, and the occasional 2 AM breakthrough. Every node, expression, and workflow represents hours of trial, error, and the quiet satisfaction of making something work.
+
+If this project helps you learn, build, or automate something you care about, it was worth every late night.
 
 ---
 
