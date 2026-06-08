@@ -1,0 +1,9 @@
+node_modules/
+.env
+dist/
+build/
+__pycache__/
+*.pyc
+linkedinPost.txt
+linkedin_banner.png
+GIT_COMMANDS.MD
